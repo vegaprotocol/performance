@@ -78,10 +78,19 @@ then
   echo "sudo groupadd docker"
   echo "sudo usermod -aG docker \$USER"
   echo "newgrp docker"
-
   exit
 else
   echo "Docker install correctly"
+fi
+
+## curl
+if ! command -v curl &>/dev/null
+then
+  echo "Please install the latest version of curl"
+  echo "sudo apt install curl -y"
+  exit
+else
+  echo "Curl install correctly"
 fi
 
 ## consoleLoadTest
@@ -121,3 +130,12 @@ git pull
 go install ./...
 cd ..
  
+## Check the new go executables are in the path
+if ! command -v vega &>/dev/null
+then
+  echo "Please add the directory \$PERFHOME/bin to your PATH variable"
+  echo "export PATH=\$PATH:\$PERFHOME/bin"
+  exit
+else
+  echo "Path set correctly"
+fi
