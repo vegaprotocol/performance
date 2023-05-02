@@ -1,0 +1,92 @@
+GatewayEnabled = true
+
+[SQLStore]
+  Enabled = true
+  [SQLStore.ConnectionConfig]
+    Database = "vega{{.NodeNumber}}"
+    Host = "localhost"
+    Password = "vega"
+    Port = 5232
+    UseTransactions = true
+    Username = "vega"
+
+
+[API]
+  Level = "Info"
+  Port = {{add 300 .NodeNumber}}7
+  CoreNodeGRPCPort = {{add 300 .NodeNumber}}2
+  MaxSubscriptionPerClient = 250000
+  [API.RateLimit]
+    BanFor = "10m0s"
+    Burst = 10000
+    Enabled = true
+    Rate = 2000.0
+    TTL = "1h0m0s"
+
+[Pprof]
+  Level = "Info"
+  Enabled = false
+  Port = {{add 60 .NodeNumber}}60
+  ProfilesDir = "{{.NodeHomeDir}}"
+
+[Gateway]
+  Level = "Info"
+  MaxSubscriptionPerClient = 2500000 
+  [Gateway.Node]
+    Port = {{add 300 .NodeNumber}}7
+  [Gateway.GraphQL]
+    Port = {{add 300 .NodeNumber}}8
+  [Gateway.REST]
+    Port = {{add 300 .NodeNumber}}9
+  [Gateway.RateLimit]
+    BanFor = "10m0s"
+    Burst = 1000000
+    Enabled = true
+    Rate = 20000.0
+    TTL = "1h0m0s"
+
+[Metrics]
+  Level = "Info"
+  Timeout = "5s"
+  Port = {{add 210 .NodeNumber}}2
+  Enabled = false
+
+[Broker]
+  Level = "Info"
+  SocketServerInboundBufferSize = 10000
+  SocketServerOutboundBufferSize = 10000
+  UseEventFile = false
+  PanicOnError = false
+  UseBufferedEventSource = true
+  EventBusClientBufferSize = 100000
+  [Broker.SocketConfig]
+    Port = {{add 300 .NodeNumber}}5
+  [Broker.FileEventSourceConfig]
+    Directory = "events"
+    File = "vega.evt"  # TODO remove post v0.68
+    TimeBetweenBlocks = "1s"
+    SendChannelBufferSize = 1000
+    IsBufferFile = false  # TODO remove post v0.68
+  [Broker.BufferedEventSourceConfig]
+    EventsPerFile = 1000000000000
+    SendChannelBufferSize = 10000
+    MaxBufferedEvents = 50000000
+    Archive = true
+    ArchiveMaximumSizeBytes = 1000000000000
+
+[NetworkHistory]
+  Enabled = true
+  [NetworkHistory.Store]
+    PeerID = "{{.GetNetworkHistoryPeerID .NodeNumber}}"
+    PrivKey = "{{.GetNetworkHistoryPrivKey .NodeNumber}}"
+
+    BootstrapPeers = [{{- range $i, $peer := .IPSFPeers -}}
+      {{- if ne $i 0 }},{{end -}}
+      "/ip4/127.0.0.1/tcp/{{add 400 $peer.Index}}5/ipfs/{{ $peer.ID }}"
+    {{- end -}}]
+
+    UseIpfsDefaultPeers = false
+    SwarmPort = {{add 400 .NodeNumber}}5
+    StartWebUI = false
+    WebUIPort = {{add 500 .NodeNumber}}5
+    SwarmKeyOverride = "{{ .NodeSet.DataNode.UniqueSwarmKey }}"
