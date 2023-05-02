@@ -26,7 +26,6 @@ do
 
   ## Clear up previous runs
   rm -f $PERFHOME/logs/*
-  rm -f $PERFHOME/results/*
 
   ## Start up the network
   vegacapsule network stop > $PERFHOME/logs/capsule.log 2>&1 
@@ -58,12 +57,12 @@ do
 
   ## Parse the log files to generate the performance numbers we need
   ## Extract the eps value
-  cat $PERFHOME/logs/bande.log | grep "eventsPerSecond" | cut -d"\"" -f4 > $PERFHOME/results/eps.csv
-  EPS=$(cat $PERFHOME/results/eps.csv | datamash -R 0 mean 1)
+  cat $PERFHOME/logs/bande.log | grep "eventsPerSecond" | cut -d"\"" -f4 > $PERFHOME/logs/eps.csv
+  EPS=$(cat $PERFHOME/logs/eps.csv | datamash -R 1 mean 1)
 
   ## Extract the backlog value
-  cat $PERFHOME/logs/bande.log | grep "backlog" | cut -d"\"" -f4 > $PERFHOME/results/bl.csv
-  BACKLOG=$(cat $PERFHOME/results/bl.csv | datamash -R 0 mean 1)
+  cat $PERFHOME/logs/bande.log | grep "backlog" | cut -d"\"" -f4 > $PERFHOME/logs/bl.csv
+  BACKLOG=$(cat $PERFHOME/logs/bl.csv | datamash -R 1 mean 1)
 
   ## Extract the core cpu value
   CORECPU=$(cat $PERFHOME/logs/cpu.log | grep "vega node" | mawk '{print $9}' | datamash -R 2 mean 1)
