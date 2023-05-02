@@ -16,8 +16,6 @@ vegacapsule network generate --config-path=./configs/config.hcl >> $PERFHOME/log
 vegacapsule network start >> $PERFHOME/logs/capsule.log 2>&1 
 sleep 10
 
-exit
-
 ## Set the variables for this run
 LPUSERS=3
 NORMALUSERS=97
@@ -31,20 +29,18 @@ RUNTIME=600
 OPS=10
 
 ## Initialise the markets
-vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u=$LPUSERS -n=$NORMALUSERS -g=localhost:8545 -m=$MARKETS -v=$VOTERS -l=$LPOPS -p=$PEGGED -U=$USELP -F=$FILLPL -t=$PERFHOME/tokens.txt -i
+vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u=$LPUSERS -n=$NORMALUSERS -g=localhost:8545 -m=$MARKETS -v=$VOTERS -l=$LPOPS -p=$PEGGED -U=$USELP -F=$FILLPL -t=$PERFHOME/tokens.txt -i > $PERFHOME/logs/perftest.log 2>&1
 
 ## Kick off the actual test
-vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -c=$OPS -r=$RUNTIME -u=$LPUSERS -n=$NORMALUSERS -g=localhost:8545 -m=$MARKETS -v=$VOTERS -l=$LPOPS -U=$USELP -t=$PERFHOME/tokens.txt &
+vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -c=$OPS -r=$RUNTIME -u=$LPUSERS -n=$NORMALUSERS -g=localhost:8545 -m=$MARKETS -v=$VOTERS -l=$LPOPS -U=$USELP -t=$PERFHOME/tokens.txt >> $PERFHOME/logs/perftest.log 2>&1 &
 
 ## Wait for things to get moving
 sleep 30
 
 ## Start collecting the CPU numbers
-rm cpu.log
 top -c -b -n100 | egrep "datanode|node0" > $PERFHOME/logs/cpu.log &
 
 ## Now collect the event and backlog values
-rm bande.log
 for i in {0..100}
 do
   curl -s localhost:3003/statistics | egrep "backlog|eventsPer" >> $PERFHOME/logs/bande.log
@@ -67,13 +63,14 @@ CORECPU=$(cat $PERFHOME/logs/cpu.log | grep "vega node" | mawk '{print $9}' | da
 DNCPU=$(cat $PERFHOME/logs/cpu.log | grep "vega datanode" | mawk '{print $9}' | datamash mean 1)
 
 ## Push the results out to a file
+echo
 echo EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU
 
 ## Shutdown the perftest app
-pkill -9 vegatools
+pkill -9 vegatools > /dev/null 2>&1
 
 ## Stop the network
 vegacapsule network stop >> $PERFHOME/logs/capsule.log 2>&1
 
 ## Close down nomad
-pkill -9 nomad
+pkill -9 nomad > /dev/null 2>&1
