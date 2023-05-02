@@ -18,7 +18,7 @@ EOT
   }
 
   wallet "wallet-1" {
-    token_passphrase_path = "$PERFHOME/configs/password.txt"
+    token_passphrase_path = "password.txt"
     template = <<-EOT
 Name = "DV"
 Level = "info"
