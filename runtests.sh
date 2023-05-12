@@ -5,7 +5,7 @@ vegacapsule nomad start > $PERFHOME/logs/nomad.log 2>&1 &
 sleep 10
 
 ## Loop through the list of scenarios we want to test
-while IFS=, read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP FILLPL RUNTIME OPS
+while IFS=, read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
 do
  echo Starting test $TESTNAME
 #  echo LP Users = $LPUSERS
