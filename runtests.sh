@@ -71,10 +71,10 @@ do
   DNCPU=$(cat $PERFHOME/logs/cpu.log | grep "vega datanode" | mawk '{print $9}' | datamash -R 2 mean 1)
 
   ## Push the results out to a file
-  echo
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU > $PERFHOME/results/$TESTNAME.log
   echo $TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU >> $PERFHOME/results/all.csv 
+  echo
 
   ## Shutdown the perftest app
   pkill vegatools > /dev/null 2>&1
