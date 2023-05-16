@@ -4,25 +4,24 @@
 vegacapsule nomad start > $PERFHOME/logs/nomad.log 2>&1 &
 sleep 10
 
-## Loop through the list of scenarios we want to test
-while IFS=, read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
-do
- echo Starting test $TESTNAME
-#  echo LP Users = $LPUSERS
-#  echo NormalUsers = $NORMALUSERS
-#  echo Markets = $MARKETS
-#  echo Voters = $VOTERS
-#  echo LP Orders Per Side = $LPOPS
-#  echo Pegged = $PEGGED
-#  echo Use LP = $USELP
-#  echo Fill Price Level = $FILLPL
-#  echo Runtime = $RUNTIME
-#  echo Operations Per Second = $OPS
+## Initialise the results file
+echo TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU > $PERFHOME/results/all.csv 
 
+## Loop through the list of scenarios we want to test
+while read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP PRICELEVELS FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
+do
   if [ "$TESTNAME" ==  "TESTNAME" ]
   then
     continue
   fi
+
+  if [[ "$TESTNAME" =~ ^"#" ]]
+  then
+    echo "Skipping test $TESTNAME"
+    continue
+  fi
+
+  echo Starting test "$TESTNAME"
 
   ## Clear up previous runs
   rm -f $PERFHOME/logs/*
@@ -36,10 +35,11 @@ do
   sleep 10
 
   ## Initialise the markets
-  vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u$LPUSERS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -l$LPOPS -p$PEGGED -U$USELP -F$FILLPL -t=$PERFHOME/tokens.txt -i > $PERFHOME/logs/perftest.log 2>&1
+  echo vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u$LPUSERS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -l$LPOPS -p$PEGGED -U=$USELP -F=$FILLPL -L$PRICELEVELS -t=$PERFHOME/tokens.txt -i > $PERFHOME/logs/perftest.log
+  vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u$LPUSERS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -l$LPOPS -p$PEGGED -U=$USELP -F=$FILLPL -L$PRICELEVELS -t=$PERFHOME/tokens.txt -i >> $PERFHOME/logs/perftest.log 2>&1
 
   ## Kick off the actual test
-  vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -c$OPS -r$RUNTIME -u$LPUSERS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -l$LPOPS -U$USELP -t=$PERFHOME/tokens.txt >> $PERFHOME/logs/perftest.log 2>&1 &
+  vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -c$OPS -r$RUNTIME -u$LPUSERS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -l$LPOPS -U=$USELP -L$PRICELEVELS -t=$PERFHOME/tokens.txt >> $PERFHOME/logs/perftest.log 2>&1 &
 
   ## Wait for things to get moving
   sleep 30
@@ -74,6 +74,7 @@ do
   echo
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU > $PERFHOME/results/$TESTNAME.log
+  echo $TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU >> $PERFHOME/results/all.csv 
 
   ## Shutdown the perftest app
   pkill vegatools > /dev/null 2>&1
