@@ -1,5 +1,11 @@
 #!/bin/bash
 
+## If we don't have a database file, create one now
+if [ ! -f "results.sql" ]
+then
+  sqlite3 -batch results.sql < createtable.sql
+fi
+
 ## Find vega version we are going to use
 VEGAVERSION=`vega version`
 echo "We are using vega version $VEGAVERSION"
@@ -88,6 +94,12 @@ do
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU > $PERFHOME/results/$TESTNAME.log
   echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU >> $PERFHOME/results/all.csv 
   echo
+
+  ## Send the results into the sql database
+  sqlite3 -batch results.sql "insert into results (TS,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS, \
+                              PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU) \
+                              values ('$TIMESTAMP','$VEGAVERSION','$VEGABRANCH','$TESTNAME',$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS, \
+                              $LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU)"
 
   ## Shutdown the perftest app
   pkill vegatools > /dev/null 2>&1
