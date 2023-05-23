@@ -1,11 +1,21 @@
 #!/bin/bash
 
+## Find vega version we are going to use
+VEGAVERSION=`vega version`
+echo "We are using vega version $VEGAVERSION"
+
+## Find the branch name for this build
+cd vega
+VEGABRANCH=`git rev-parse --abbrev-ref HEAD`
+echo "We built the code from the branch $VEGABRANCH"
+cd ..
+
 ## Start up the nomad controller
 vegacapsule nomad start > $PERFHOME/logs/nomad.log 2>&1 &
 sleep 10
 
 ## Initialise the results file
-echo TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU > $PERFHOME/results/all.csv 
+echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU > $PERFHOME/results/all.csv 
 
 ## Loop through the list of scenarios we want to test
 while read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP PRICELEVELS FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
@@ -70,10 +80,13 @@ do
   ## Extract the datanode cpu value
   DNCPU=$(cat $PERFHOME/logs/cpu.log | grep "vega datanode" | mawk '{print $9}' | datamash -R 2 mean 1)
 
+  ## Generate a timestamp for this run
+  TIMESTAMP=`date --rfc-3339=seconds --utc`
+
   ## Push the results out to a file
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU > $PERFHOME/results/$TESTNAME.log
-  echo $TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU >> $PERFHOME/results/all.csv 
+  echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU >> $PERFHOME/results/all.csv 
   echo
 
   ## Shutdown the perftest app
