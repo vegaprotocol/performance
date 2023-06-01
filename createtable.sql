@@ -17,5 +17,6 @@ CREATE TABLE results (
     EPS REAL,
     BACKLOG REAL,
     CORECPU REAL,
-    DNCPU REAL
+    DNCPU REAL,
+    PGCPU REAL
 );

@@ -21,7 +21,7 @@ vegacapsule nomad start > $PERFHOME/logs/nomad.log 2>&1 &
 sleep 10
 
 ## Initialise the results file
-echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU > $PERFHOME/results/all.csv 
+echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU > $PERFHOME/results/all.csv 
 
 ## Loop through the list of scenarios we want to test
 while read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP PRICELEVELS FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
@@ -61,7 +61,7 @@ do
   sleep 30
 
   ## Start collecting the CPU numbers
-  top -c -b -n50 | egrep "datanode|node0" > $PERFHOME/logs/cpu.log &
+  top -c -b -n50 | egrep "datanode|node0|postgres:" > $PERFHOME/logs/cpu.log &
 
   ## Now collect the event and backlog values
   for i in {0..100}
@@ -86,20 +86,26 @@ do
   ## Extract the datanode cpu value
   DNCPU=$(cat $PERFHOME/logs/cpu.log | grep "vega datanode" | mawk '{print $9}' | datamash -R 2 mean 1)
 
+  ## Extract the postgres cpu value
+  ## Because the postgres app is made up of several sub processes (thankfully all called postgres), we add up their total
+  ## cpu time over the 50 collection times and then divide the result by 50 to get the average CPU time per second
+  PGCPU=$(cat $PERFHOME/logs/cpu.log | grep "postgres" | mawk '{print $9}' | datamash -R 1 sum 1 | datamash round 1)
+  PGCPU=$(bc -l <<< "scale=2; $PGCPU/50")
+
   ## Generate a timestamp for this run
   TIMESTAMP=`date --rfc-3339=seconds --utc`
 
   ## Push the results out to a file
-  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU
-  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU > $PERFHOME/results/$TESTNAME.log
-  echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU >> $PERFHOME/results/all.csv 
+  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU
+  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU > $PERFHOME/results/$TESTNAME.log
+  echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU >> $PERFHOME/results/all.csv 
   echo
 
   ## Send the results into the sql database
   sqlite3 -batch results.sql "insert into results (TS,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS, \
-                              PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU) \
+                              PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU) \
                               values ('$TIMESTAMP','$VEGAVERSION','$VEGABRANCH','$TESTNAME',$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS, \
-                              $LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU)"
+                              $LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU)"
 
   ## Shutdown the perftest app
   pkill vegatools > /dev/null 2>&1
