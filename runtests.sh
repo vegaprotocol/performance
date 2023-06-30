@@ -21,7 +21,7 @@ vegacapsule nomad start > $PERFHOME/logs/nomad.log 2>&1 &
 sleep 10
 
 ## Initialise the results file
-echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU > $PERFHOME/results/all.csv 
+echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU > $PERFHOME/results/all.csv
 
 ## Loop through the list of scenarios we want to test
 while read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP PRICELEVELS FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
@@ -39,15 +39,17 @@ do
 
   echo Starting test "$TESTNAME"
 
+  cat $PERFHOME/logs/nomad.log
+
   ## Clear up previous runs
   rm -f $PERFHOME/logs/*
 
   ## Start up the network
-  vegacapsule network stop > $PERFHOME/logs/capsule.log 2>&1 
-  vegacapsule network destroy >> $PERFHOME/logs/capsule.log 2>&1 
-  vegacapsule network generate --config-path=./configs/config.hcl >> $PERFHOME/logs/capsule.log 2>&1 
+  vegacapsule network stop > $PERFHOME/logs/capsule.log 2>&1
+  vegacapsule network destroy >> $PERFHOME/logs/capsule.log 2>&1
+  vegacapsule network generate --config-path=./configs/config.hcl >> $PERFHOME/logs/capsule.log 2>&1
   ./scripts/createwallets.sh
-  vegacapsule network start >> $PERFHOME/logs/capsule.log 2>&1 
+  vegacapsule network start >> $PERFHOME/logs/capsule.log 2>&1
   sleep 10
 
   ## Initialise the markets
@@ -98,7 +100,7 @@ do
   ## Push the results out to a file
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU > $PERFHOME/results/$TESTNAME.log
-  echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU >> $PERFHOME/results/all.csv 
+  echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU >> $PERFHOME/results/all.csv
   echo
 
   ## Send the results into the sql database
