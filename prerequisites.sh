@@ -32,7 +32,7 @@ then
   echo "Please install the latest version of golang"
   echo "$ wget https://go.dev/dl/go1.19.8.linux-amd64.tar.gz"
   echo "$ sudo rm -rf /usr/local/go"
-  echo "$ sudo tar -C /usr/local -xzf go1.19.8.linux-amd64.tar.gz" 
+  echo "$ sudo tar -C /usr/local -xzf go1.19.8.linux-amd64.tar.gz"
   echo "Then add /usr/local/go/bin to your PATH variable"
   exit
 else
@@ -94,42 +94,47 @@ else
 fi
 
 ## consoleLoadTest
-#rm -rf consoleLoadTest 
+#rm -rf consoleLoadTest
 #git clone https://github.com/vegaprotocol/consoleLoadTest.git
 
-## vegatools
-if [ ! -d "vegatools" ]
-then
-  git clone https://github.com/vegaprotocol/vegatools.git
+
+if [[ "$1" != "--skip-clone" ]]; then
+
+  ## vegatools
+  if [ ! -d "vegatools" ]
+  then
+    git clone https://github.com/vegaprotocol/vegatools.git
+  fi
+
+  cd vegatools
+  git pull
+  go install ./...
+  cd ..
+
+  ## vega
+  if [ ! -d "vega" ]
+  then
+    git clone https://github.com/vegaprotocol/vega.git
+  fi
+
+  cd vega
+  git pull
+  go install ./...
+  cd ..
+
+  ## vega capsule
+  if [ ! -d "vegacapsule" ]
+  then
+    git clone https://github.com/vegaprotocol/vegacapsule.git
+  fi
+
+  cd vegacapsule
+  git pull
+  go install ./...
+  cd ..
+
 fi
 
-cd vegatools
-git pull
-go install ./...
-cd ..
-
-## vega
-if [ ! -d "vega" ]
-then
-  git clone https://github.com/vegaprotocol/vega.git
-fi
-
-cd vega
-git pull
-go install ./...
-cd ..
-
-## vega capsule
-if [ ! -d "vegacapsule" ]
-then
-  git clone https://github.com/vegaprotocol/vegacapsule.git
-fi
-
-cd vegacapsule
-git pull
-go install ./...
-cd ..
- 
 ## Check the new go executables are in the path
 if ! command -v vega &>/dev/null
 then
