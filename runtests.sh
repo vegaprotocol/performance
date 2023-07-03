@@ -20,8 +20,6 @@ cd ..
 vegacapsule nomad start > $PERFHOME/logs/nomad.log 2>&1 &
 sleep 10
 
-network_started="no"
-
 ## Initialise the results file
 echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU > $PERFHOME/results/all.csv
 
@@ -35,7 +33,6 @@ do
 
   if [[ "$TESTNAME" =~ ^"#" ]]
   then
-    echo "Skipping test $TESTNAME"
     continue
   fi
 
@@ -44,18 +41,11 @@ do
   ## Clear up previous runs
   rm -f $PERFHOME/logs/*
 
-  # remove previous network
-  if [[ "network_started" = "yes" ]]; then
-    vegacapsule network stop > $PERFHOME/logs/capsule.log 2>&1
-    vegacapsule network destroy >> $PERFHOME/logs/capsule.log 2>&1
-  fi
-
   ## Start up the network
   vegacapsule network generate --config-path=./configs/config.hcl >> $PERFHOME/logs/capsule.log 2>&1
   ./scripts/createwallets.sh
   vegacapsule network start >> $PERFHOME/logs/capsule.log 2>&1
   sleep 10
-  network_started="yes"
 
   ## Initialise the markets
   echo vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u$LPUSERS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -l$LPOPS -p$PEGGED -U=$USELP -F=$FILLPL -L$PRICELEVELS -t=$PERFHOME/tokens.txt -i > $PERFHOME/logs/perftest.log
@@ -68,7 +58,7 @@ do
   sleep 30
 
   ## Start collecting the CPU numbers
-  top -c -b -n50 | egrep "datanode|node0|postgres:" > $PERFHOME/logs/cpu.log &
+  top -c -b -n50 -w512 | egrep "datanode|node0|postgres:" > $PERFHOME/logs/cpu.log &
 
   ## Now collect the event and backlog values
   for i in {0..100}
@@ -119,6 +109,7 @@ do
 
   ## Stop the network
   vegacapsule network stop >> $PERFHOME/logs/capsule.log 2>&1
+  vegacapsule network destroy >> $PERFHOME/logs/capsule.log 2>&1
   sleep 3
 done < input.csv
 
