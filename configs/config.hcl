@@ -13,7 +13,7 @@ network "testnet" {
 	  template = <<-EOT
 [RateLimit]
   CoolDown = "1m0s"
-  AllowList = ["0.0.0.0/0"]
+  AllowList = ["0.0.0.0/0", "192.0.0.0/24"]
 
 [Node]
   Port = 3002
