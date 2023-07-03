@@ -11,6 +11,10 @@ network "testnet" {
 	  wallet_pass = "f4uc3tw4ll3t-v3g4-p4ssphr4e3"
 
 	  template = <<-EOT
+[RateLimit]
+  CoolDown = "1m0s"
+  AllowList = ["0.0.0.0/0"]
+
 [Node]
   Port = 3002
   IP = "127.0.0.1"
