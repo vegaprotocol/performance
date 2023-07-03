@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## Clear up any config files left over from the past run
+rm -rf ~/.vegacapsule/testnet
+
 ## If we don't have a database file, create one now
 if [ ! -f "results.sql" ]
 then
