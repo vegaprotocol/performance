@@ -1,12 +1,15 @@
 #!/bin/bash
 
+## Get the password needed to access the postgres db
+PGPASSWORD=credentials("PERFORMANCE_DB_PASSWORD")
+
 ## Clear up any config files left over from the past run
 rm -rf ~/.vegacapsule/testnet
 
 ## If we don't have a database file, create one now
 if [ ! -f "results.sql" ]
 then
-  sqlite3 -batch results.sql < createtable.sql
+  psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER defaultdb < createtable.sql
 fi
 
 ## Find vega version we are going to use
@@ -102,7 +105,7 @@ do
   echo
 
   ## Send the results into the sql database
-  sqlite3 -batch results.sql "insert into results (TS,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS, \
+  psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER defaultdb "insert into perf_results (TS,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS, \
                               PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU) \
                               values ('$TIMESTAMP','$VEGAVERSION','$VEGABRANCH','$TESTNAME',$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS, \
                               $LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU)"

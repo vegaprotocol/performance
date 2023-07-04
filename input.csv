@@ -22,6 +22,3 @@ Markets6       3        97           50       3       1      0       false  1000
 PriceLevels1   3        97           1        3       1      0       false  1000         true    600      100
 PriceLevels2   3        97           1        3       1      0       false  5000         true    600      100
 PriceLevels3   3        97           1        3       1      0       false  10000        true    600      100
-PriceLevels4   3        97           1        3       1      0       false  25000        true    600      100
-PriceLevels5   3        97           1        3       1      0       false  50000        true    600      100
-PriceLevels6   3        97           1        3       1      0       false  100000       true    600      100
