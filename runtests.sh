@@ -1,9 +1,11 @@
 #!/bin/bash
-set -x
+# set -x
+# env 
 
-env 
-## Get the password needed to access the postgres db
-# PGPASSWORD=credentials("PERFORMANCE_DB_PASSWORD")
+if [ -z "$PGPASSWORD" ]; then
+  echo "PGPASSWORD env variable is missing. Set it before you execute the runtests.sh script";
+  exit 1;
+fi;
 
 ## Clear up any config files left over from the past run
 rm -rf ~/.vegacapsule/testnet
