@@ -1,7 +1,9 @@
 #!/bin/bash
+set -x
 
+env 
 ## Get the password needed to access the postgres db
-PGPASSWORD=credentials("PERFORMANCE_DB_PASSWORD")
+# PGPASSWORD=credentials("PERFORMANCE_DB_PASSWORD")
 
 ## Clear up any config files left over from the past run
 rm -rf ~/.vegacapsule/testnet
@@ -9,7 +11,7 @@ rm -rf ~/.vegacapsule/testnet
 ## If we don't have a database file, create one now
 if [ ! -f "results.sql" ]
 then
-  psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER defaultdb < createtable.sql
+  psql --host $POSTGRES_HOST --port $POSTGRES_PORT --user $POSTGRES_USER defaultdb < createtable.sql
 fi
 
 ## Find vega version we are going to use
