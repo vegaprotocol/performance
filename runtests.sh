@@ -11,10 +11,7 @@ fi;
 rm -rf ~/.vegacapsule/testnet
 
 ## If we don't have a database file, create one now
-if [ ! -f "results.sql" ]
-then
-  psql --host $POSTGRES_HOST --port $POSTGRES_PORT --user $POSTGRES_USER defaultdb < createtable.sql
-fi
+psql --host $POSTGRES_HOST --port $POSTGRES_PORT --user $POSTGRES_USER defaultdb < createtable.sql
 
 ## Find vega version we are going to use
 VEGAVERSION=`vega version`
@@ -109,10 +106,12 @@ do
   echo
 
   ## Send the results into the sql database
-  psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER defaultdb "insert into perf_results (TS,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS, \
-                              PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU) \
-                              values ('$TIMESTAMP','$VEGAVERSION','$VEGABRANCH','$TESTNAME',$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS, \
-                              $LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU)"
+  SQL="insert into perf_results (TS,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS, \
+    PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU) \
+    values ('$TIMESTAMP','$VEGAVERSION','$VEGABRANCH','$TESTNAME',$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS, \
+    $LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU)"
+
+  psql --host $POSTGRES_HOST --port $POSTGRES_PORT --user $POSTGRES_USER defaultdb -c "$SQL"
 
   ## Shutdown the perftest app
   pkill vegatools > /dev/null 2>&1
