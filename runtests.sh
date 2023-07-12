@@ -24,7 +24,7 @@ echo "We built the code from the branch $VEGABRANCH"
 cd ..
 
 ## Start up the nomad controller
-vegacapsule nomad start > $PERFHOME/logs/nomad.log 2>&1 &
+vegacapsule nomad start > $PERFHOME/nomad.log 2>&1 &
 sleep 10
 
 ## Initialise the results file
@@ -51,6 +51,7 @@ do
   ## Start up the network
   vegacapsule network generate --config-path=./configs/config.hcl >> $PERFHOME/logs/capsule.log 2>&1
   ./scripts/createwallets.sh
+  sleep 10
   vegacapsule network start >> $PERFHOME/logs/capsule.log 2>&1
   sleep 10
 
