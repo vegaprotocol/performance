@@ -80,7 +80,7 @@ do
   ## Now collect the event and backlog values
   for i in {0..100}
   do
-    curl -s localhost:3003/statistics | egrep "backlog|event$pprof_collection_enabledsPer" >> $PERFHOME/logs/bande.log
+    curl -s localhost:3003/statistics | egrep "backlog|eventsPer" >> $PERFHOME/logs/bande.log
     sleep 1
   done
   sleep 30
@@ -110,7 +110,7 @@ do
   TIMESTAMP=`date --rfc-3339=seconds --utc`
 
   ## Push the results out to a file
-  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$pprof_collection_enabled$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU
+  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU > $PERFHOME/results/$TESTNAME.log
   echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU >> $PERFHOME/results/all.csv
   echo
