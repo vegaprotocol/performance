@@ -133,10 +133,12 @@ do
     pprof_base="${PERFHOME}/pprofs/iteration-${iteration}"
     mkdir -p "${pprof_base}"
     while read -r pprof; do
-      mv $pprof $(echo $pprof | sed "s|$HOME/.vegacapsule/testnet|$pprof_base|g")
+      new_location=$(echo $pprof | sed "s|$HOME/.vegacapsule/testnet|$pprof_base|g")
+      mkdir -p $(dirname $new_location)
+      mv $pprof $new_location
     done< <(find ~/.vegacapsule/testnet -name "*.pprof")
   fi
-  
+
   vegacapsule network destroy >> $PERFHOME/logs/capsule.log 2>&1
   sleep 3
   iteration=$(( iteration + 1 ))
