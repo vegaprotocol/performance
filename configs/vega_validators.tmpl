@@ -28,3 +28,13 @@
 	[Processor.Ratelimit]
 		Requests = 10000
 		PerNBlocks = 1
+
+
+[Pprof]
+  	Level = "Info"
+  	Enabled = true
+  	Port = 6060
+  	ProfilesDir = "{{.NodeHomeDir}}/pprof"
+  	BlockProfileRate = 0
+  	MutexProfileFraction = 0
+  	WriteEvery = "1m0s"

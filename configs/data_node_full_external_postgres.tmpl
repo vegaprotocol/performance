@@ -25,13 +25,13 @@ GatewayEnabled = true
 
 [Pprof]
   Level = "Info"
-  Enabled = false
+  Enabled = true
   Port = {{add 60 .NodeNumber}}60
-  ProfilesDir = "{{.NodeHomeDir}}"
+  ProfilesDir = "{{.NodeHomeDir}}/pprof"
 
 [Gateway]
   Level = "Info"
-  MaxSubscriptionPerClient = 2500000 
+  MaxSubscriptionPerClient = 2500000
   [Gateway.Node]
     Port = {{add 300 .NodeNumber}}7
   [Gateway.GraphQL]
