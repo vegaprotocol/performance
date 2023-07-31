@@ -1,11 +1,17 @@
 #!/bin/bash
 # set -x
-# env 
+# env
 
 if [ -z "$PGPASSWORD" ]; then
   echo "PGPASSWORD env variable is missing. Set it before you execute the runtests.sh script";
   exit 1;
 fi;
+
+if [[ "$1" = "--pprof-collection" ]]; then
+  pprof_collection_enabled="true"
+else
+  pprof_collection_enabled="false"
+fi
 
 ## Clear up any config files left over from the past run
 rm -rf ~/.vegacapsule/testnet
@@ -29,6 +35,8 @@ sleep 10
 
 ## Initialise the results file
 echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU > $PERFHOME/results/all.csv
+
+iteration=0
 
 ## Loop through the list of scenarios we want to test
 while read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP PRICELEVELS FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
@@ -72,7 +80,7 @@ do
   ## Now collect the event and backlog values
   for i in {0..100}
   do
-    curl -s localhost:3003/statistics | egrep "backlog|eventsPer" >> $PERFHOME/logs/bande.log
+    curl -s localhost:3003/statistics | egrep "backlog|event$pprof_collection_enabledsPer" >> $PERFHOME/logs/bande.log
     sleep 1
   done
   sleep 30
@@ -102,7 +110,7 @@ do
   TIMESTAMP=`date --rfc-3339=seconds --utc`
 
   ## Push the results out to a file
-  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU
+  echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$pprof_collection_enabled$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU
   echo TESTNAME=$TESTNAME,EPS=$EPS,BACKLOG=$BACKLOG,CORECPU=$CORECPU,DNCPU=$DNCPU,PGCPU=$PGCPU > $PERFHOME/results/$TESTNAME.log
   echo $TIMESTAMP,$VEGAVERSION,$VEGABRANCH,$TESTNAME,$LPUSERS,$NORMALUSERS,$MARKETS,$VOTERS,$LPOPS,$PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU >> $PERFHOME/results/all.csv
   echo
@@ -120,8 +128,18 @@ do
 
   ## Stop the network
   vegacapsule network stop >> $PERFHOME/logs/capsule.log 2>&1
+
+  if [[ "$pprof_collection_enabled" = "true" ]]; then
+    pprof_base="${PERFHOME}/pprofs/iteration-${iteration}"
+    mkdir -p "${pprof_base}"
+    while read -r pprof; do
+      mv $pprof $(echo $pprof | sed "s|$HOME/.vegacapsule/testnet|$pprof_base|g")
+    done< <(find ~/.vegacapsule/testnet -name "*.pprof")
+  fi
+  
   vegacapsule network destroy >> $PERFHOME/logs/capsule.log 2>&1
   sleep 3
+  iteration=$(( iteration + 1 ))
 done < input.csv
 
 ## Close down nomad
