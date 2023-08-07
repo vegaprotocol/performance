@@ -60,7 +60,6 @@ do
   vegacapsule network generate --config-path=./configs/config.hcl >> $PERFHOME/logs/capsule.log 2>&1
   ./scripts/createwallets.sh
   sleep 10
-  docker info
   vegacapsule network start >> $PERFHOME/logs/capsule.log 2>&1
   sleep 10
 
