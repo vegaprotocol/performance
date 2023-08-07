@@ -93,6 +93,16 @@ else
   echo "Curl install correctly"
 fi
 
+## bc
+if ! command -v bc &>/dev/null
+then
+  echo "Please install the latest version of bc"
+  echo "sudo apt install bc -y"
+  exit
+else
+  echo "Bc install correctly"
+fi
+
 ## consoleLoadTest
 #rm -rf consoleLoadTest
 #git clone https://github.com/vegaprotocol/consoleLoadTest.git
