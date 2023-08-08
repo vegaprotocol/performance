@@ -36,8 +36,6 @@ sleep 10
 ## Initialise the results file
 echo TIMESTAMP,VEGAVERSION,VEGABRANCH,TESTNAME,LPUSERS,NORMALUSERS,MARKETS,VOTERS,LPOPS,PEGGED,USELP,PRICELEVELS,FILLPL,RUNTIME,OPS,EPS,BACKLOG,CORECPU,DNCPU,PGCPU > $PERFHOME/results/all.csv
 
-iteration=0
-
 ## Loop through the list of scenarios we want to test
 while read -r TESTNAME LPUSERS NORMALUSERS MARKETS VOTERS LPOPS PEGGED USELP PRICELEVELS FILLPL RUNTIME OPS || [ -n "$TESTNAME" ]
 do
@@ -129,7 +127,7 @@ do
   vegacapsule network stop >> $PERFHOME/logs/capsule.log 2>&1
 
   if [[ "$pprof_collection_enabled" = "true" ]]; then
-    pprof_base="${PERFHOME}/pprofs/iteration-${iteration}"
+    pprof_base="${PERFHOME}/pprofs/${TESTNAME}"
     mkdir -p "${pprof_base}"
     while read -r pprof; do
       new_location=$(echo $pprof | sed "s|$HOME/.vegacapsule/testnet|$pprof_base|g")
@@ -140,7 +138,6 @@ do
 
   vegacapsule network destroy >> $PERFHOME/logs/capsule.log 2>&1
   sleep 3
-  iteration=$(( iteration + 1 ))
 done < input.csv
 
 ## Close down nomad
