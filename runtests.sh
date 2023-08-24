@@ -117,7 +117,7 @@ do
     values ('$TIMESTAMP','$VEGAVERSION','$VEGABRANCH','$TESTNAME',$LPUSERS,$SLALEVELS,$SLAUPDATE,$NORMALUSERS,$MARKETS,$VOTERS, \
     $PEGGED,$USELP,$PRICELEVELS,$FILLPL,$RUNTIME,$OPS,$EPS,$BACKLOG,$CORECPU,$DNCPU,$PGCPU)"
 
-  # psql --host $POSTGRES_HOST --port $POSTGRES_PORT --user $POSTGRES_USER defaultdb -c "$SQL"
+  psql --host $POSTGRES_HOST --port $POSTGRES_PORT --user $POSTGRES_USER defaultdb -c "$SQL"
 
   ## Shutdown the perftest app
   pkill vegatools > /dev/null 2>&1
