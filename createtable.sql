@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS perf_results (
     MARKETS integer,
     VOTERS integer,
     PEGGED integer,
+    STOPORDERS integer,
     USELP boolean,
     PRICELEVELS integer,
     FILLPL boolean,
