@@ -59,7 +59,8 @@ do
   ./scripts/createwallets.sh
   sleep 10
   vegacapsule network start >> $PERFHOME/logs/capsule.log 2>&1
-  sleep 10
+  ## Wait for the wallet to import all the users as it can take a while
+  sleep 60
 
   ## Initialise the markets
   vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u$LPUSERS -l$SLALEVELS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -p$PEGGED -U=$USELP -F=$FILLPL -L$PRICELEVELS -t=$PERFHOME/tokens.txt -d=$STOPORDERS -i >> $PERFHOME/logs/perftest.log 2>&1
