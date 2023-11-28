@@ -66,10 +66,10 @@ do
   vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -u$LPUSERS -l$SLALEVELS -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -p$PEGGED -U=$USELP -F=$FILLPL -L$PRICELEVELS -t=$PERFHOME/tokens.txt -d=$STOPORDERS -i >> $PERFHOME/logs/perftest.log 2>&1
 
   ## Kick off the actual test
-  vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -c$OPS -r$RUNTIME -u$LPUSERS -l$SLALEVELS -S$SLAUPDATE -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -U=$USELP -L$PRICELEVELS -d=0 -t=$PERFHOME/tokens.txt >> $PERFHOME/logs/perftest.log 2>&1 &
+  vegatools perftest -a=localhost:3027 -w=localhost:1789 -f=localhost:1790 -c$OPS -r$RUNTIME -u$LPUSERS -l$SLALEVELS -S$SLAUPDATE -n$NORMALUSERS -g=localhost:8545 -m$MARKETS -v$VOTERS -U=$USELP -L$PRICELEVELS -d=0 -t=$PERFHOME/tokens.txt -I >> $PERFHOME/logs/perftest.log 2>&1 &
 
-  ## Wait for things to get moving (takes 120 seconds to start up when using 1000 users)
-  sleep 140
+  ## Wait for things to get moving 
+  sleep 30
 
   ## Start collecting the CPU numbers
   top -c -b -n50 -w512 | egrep "datanode|node0|postgres:" > $PERFHOME/logs/cpu.log &
