@@ -74,6 +74,10 @@ do
   ## Start collecting the CPU numbers
   top -c -b -n50 -w512 | egrep "datanode|node0|postgres:" > $PERFHOME/logs/cpu.log &
 
+  ## Start collecting event counts for a report to see which events are the most common
+  vegatools eventrate -a=localhost:3027 -e99 -f100 > $PERFHOME/logs/eventrate.log &
+
+
   ## Now collect the event and backlog values
   for i in {0..100}
   do
@@ -102,6 +106,9 @@ do
   ## cpu time over the 50 collection times and then divide the result by 50 to get the average CPU time per second
   PGCPU=$(cat $PERFHOME/logs/cpu.log | grep "postgres" | mawk '{print $9}' | datamash -R 1 sum 1 | datamash round 1)
   PGCPU=$(bc -l <<< "scale=2; $PGCPU/50")
+
+  ## Backup the eventrate report for access later
+  cp $PERFHOME/logs/eventrate.log $PERFHOME/$TESTNAME-eventrate.log
 
   ## Generate a timestamp for this run
   TIMESTAMP=`date --rfc-3339=seconds --utc`
