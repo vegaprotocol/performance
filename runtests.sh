@@ -108,7 +108,7 @@ do
   PGCPU=$(bc -l <<< "scale=2; $PGCPU/50")
 
   ## Backup the eventrate report for access later
-  cp $PERFHOME/logs/eventrate.log $PERFHOME/$TESTNAME-eventrate.log
+  cp $PERFHOME/logs/eventrate.log $PERFHOME/results/$TESTNAME-eventrate.log
 
   ## Generate a timestamp for this run
   TIMESTAMP=`date --rfc-3339=seconds --utc`
