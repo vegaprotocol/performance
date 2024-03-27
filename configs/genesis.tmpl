@@ -2,7 +2,7 @@
 	"app_state": {
 	  "assets": {
 		"fBTC": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "BTC (fake)",
@@ -15,7 +15,7 @@
 		  }
 		},
 		"fDAI": {
-      "quantum": "1",
+     	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "DAI (fake)",
@@ -28,7 +28,7 @@
 		  }
 		},
 		"fEURO": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "EURO (fake)",
@@ -41,7 +41,7 @@
 		  }
 		},
 		"fUSDC": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "USDC (fake)",
@@ -54,7 +54,7 @@
 		  }
 		},
 		"XYZalpha": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "XYZ (α alpha)",
@@ -67,7 +67,7 @@
 		  }
 		},
 		"XYZbeta": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "XYZ (β beta)",
@@ -80,7 +80,7 @@
 		  }
 		},
 		"XYZgamma": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "XYZ (γ gamma)",
@@ -93,7 +93,7 @@
 		  }
 		},
 		"XYZdelta": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "XYZ (δ delta)",
@@ -106,7 +106,7 @@
 		  }
 		},
 		"XYZepsilon": {
-      "quantum": "1",
+    	  "quantum": "1",
 		  "min_lp_stake": "1",
 		  "decimals": 5,
 		  "name": "XYZ (ε epsilon)",
@@ -118,8 +118,8 @@
 			}
 		  }
 		},
-		"{{.GetVegaContractID "tBTC"}}": {
-      "quantum": "1",
+		"{{.PrimaryBridge.GetVegaContractID "tBTC"}}": {
+    		"quantum": "1",
 			"min_lp_stake": "1",
 			"decimals": 5,
 			"name": "BTC (local)",
@@ -127,12 +127,13 @@
 			"total_supply": "0",
 			"source": {
 				"erc20": {
-					"contract_address": "{{.GetEthContractAddr "tBTC"}}"
+					"contract_address": "{{.PrimaryBridge.GetEthContractAddr "tBTC"}}",
+					"chain_id": "{{.PrimaryBridge.ChainID}}"
 				}
 			}
 		},
-		"{{.GetVegaContractID "tDAI"}}": {
-      "quantum": "1",
+		"{{.PrimaryBridge.GetVegaContractID "tDAI"}}": {
+			"quantum": "1",
 			"min_lp_stake": "1",
 			"decimals": 5,
 			"name": "DAI (local)",
@@ -140,12 +141,13 @@
 			"total_supply": "0",
 			"source": {
 				"erc20": {
-					"contract_address": "{{.GetEthContractAddr "tDAI"}}"
+					"contract_address": "{{.PrimaryBridge.GetEthContractAddr "tDAI"}}",
+					"chain_id": "{{.PrimaryBridge.ChainID}}"
 				}
 			}
 		},
-		"{{.GetVegaContractID "tEURO"}}": {
-      "quantum": "1",
+		"{{.PrimaryBridge.GetVegaContractID "tEURO"}}": {
+      		"quantum": "1",
 			"min_lp_stake": "1",
 			"decimals": 5,
 			"name": "EURO (local)",
@@ -153,12 +155,13 @@
 			"total_supply": "0",
 			"source": {
 				"erc20": {
-					"contract_address": "{{.GetEthContractAddr "tEURO"}}"
+					"contract_address": "{{.PrimaryBridge.GetEthContractAddr "tEURO"}}",
+					"chain_id": "{{.PrimaryBridge.ChainID}}"
 				}
 			}
 		},
-		"{{.GetVegaContractID "tUSDC"}}": {
-      "quantum": "1",
+		"{{.PrimaryBridge.GetVegaContractID "tUSDC"}}": {
+      		"quantum": "1",
 			"min_lp_stake": "1",
 			"decimals": 5,
 			"name": "USDC (local)",
@@ -166,12 +169,13 @@
 			"total_supply": "0",
 			"source": {
 				"erc20": {
-					"contract_address": "{{.GetEthContractAddr "tUSDC"}}"
+					"contract_address": "{{.PrimaryBridge.GetEthContractAddr "tUSDC"}}",
+					"chain_id": "{{.PrimaryBridge.ChainID}}"
 				}
 			}
 		},
-		"{{.GetVegaContractID "VEGA"}}": {
-      "quantum": "1",
+		"{{.PrimaryBridge.GetVegaContractID "VEGA"}}": {
+      		"quantum": "1",
 			"min_lp_stake": "1",
 			"decimals": 18,
 			"name": "Vega",
@@ -179,7 +183,9 @@
 			"total_supply": "64999723000000000000000000",
 			"source": {
 				"erc20": {
-				"contract_address": "{{.GetEthContractAddr "VEGA"}}"
+				"contract_address": "{{.PrimaryBridge.GetEthContractAddr "VEGA"}}",
+				          "chain_id": "{{.PrimaryBridge.ChainID}}"
+
 				}
 			}
 		}
@@ -192,7 +198,8 @@
       "propose_market_enabled": true
     },
 	  "network_parameters": {
-      "blockchains.ethereumConfig": "{\"network_id\": \"{{ .NetworkID }}\", \"chain_id\": \"{{ .ChainID }}\", \"collateral_bridge_contract\": { \"address\": \"{{.GetEthContractAddr "erc20_bridge_1"}}\" }, \"confirmations\": 3, \"staking_bridge_contract\": { \"address\": \"{{.GetEthContractAddr "staking_bridge"}}\", \"deployment_block_height\": 0}, \"token_vesting_contract\": { \"address\": \"{{.GetEthContractAddr "erc20_vesting"}}\", \"deployment_block_height\": 0 }, \"multisig_control_contract\": { \"address\": \"{{.GetEthContractAddr "MultisigControl"}}\", \"deployment_block_height\": 0 }}",
+      "blockchains.ethereumConfig": "{\"network_id\": \"{{ .PrimaryBridge.NetworkID }}\", \"chain_id\": \"{{ .PrimaryBridge.ChainID }}\", \"collateral_bridge_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "erc20_bridge_1"}}\" }, \"confirmations\": 3, \"staking_bridge_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "staking_bridge"}}\", \"deployment_block_height\": 0}, \"token_vesting_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "erc20_vesting"}}\", \"deployment_block_height\": 0 }, \"multisig_control_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "MultisigControl"}}\", \"deployment_block_height\": 0 }}",
+      "blockchains.evmChainConfig": "{\"network_id\": \"{{ .SecondaryBridge.NetworkID }}\", \"chain_id\": \"{{ .SecondaryBridge.ChainID }}\", \"collateral_bridge_contract\": { \"address\": \"{{.SecondaryBridge.GetEthContractAddr "erc20_bridge_1"}}\" }, \"confirmations\": 3,  \"multisig_control_contract\": { \"address\": \"{{.SecondaryBridge.GetEthContractAddr "MultisigControl"}}\", \"deployment_block_height\": 0 }}",
       "governance.proposal.asset.maxClose": "720h",
       "blockchains.ethereumRpcAndEvmCompatDataSourcesConfig": "{\"configs\": []}",
       "governance.proposal.asset.maxEnact": "720h",

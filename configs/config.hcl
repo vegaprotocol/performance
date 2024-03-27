@@ -6,7 +6,11 @@ network "testnet" {
     network_id = "1441"
     endpoint   = "ws://127.0.0.1:8545/"
   }
-  
+  secondary_ethereum {
+    chain_id   = "1450"
+    network_id = "1451"
+    endpoint   = "ws://127.0.0.1:8546/"
+  }
   faucet "faucet-1" {
 	  wallet_pass = "f4uc3tw4ll3t-v3g4-p4ssphr4e3"
 
@@ -40,7 +44,7 @@ EOT
   pre_start {
     docker_service "ganache-1" {
       # Do not use the `latest` tag to avoid pulling image every network restart.
-      image = "vegaprotocol/ganache:v1.2.4" 
+      image = "vegaprotocol/ganache:latest" 
       cmd = "ganache-cli"
       args = [
         "--blockTime", "1",
@@ -57,6 +61,25 @@ EOT
       }
       auth_soft_fail = true
     }
+    docker_service "ganache-2" {
+      image = "vegaprotocol/ganache:latest"
+      cmd   = "ganache-cli"
+      args  = [
+        "--blockTime", "1",
+        "--chainId", "1450",
+        "--networkId", "1451",
+        "-h", "0.0.0.0",
+        "-p", "8546",
+        "-m", "ozone access unlock valid olympic save include omit supply green clown session",
+        "--db", "/app/ganache-db",
+      ]
+      static_port {
+        value = 8546
+        to    = 8546
+      }
+      auth_soft_fail = true
+    }
+
     docker_service "postgres-1" {
       image = "vegaprotocol/timescaledb:2.8.0-pg14"
       cmd = "postgres"
@@ -84,6 +107,7 @@ EOT
   
   genesis_template_file = "./genesis.tmpl"
   smart_contracts_addresses_file = "./public_smart_contracts_addresses.json"
+  secondary_smart_contracts_addresses_file = "./secondary_public_smart_contracts_addresses.json"
 
   node_set "validators" {
     count = 2
