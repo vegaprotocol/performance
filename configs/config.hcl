@@ -44,7 +44,7 @@ EOT
   pre_start {
     docker_service "ganache-1" {
       # Do not use the `latest` tag to avoid pulling image every network restart.
-      image = "vegaprotocol/ganache:latest" 
+      image = "vegaprotocol/ganache:v1.2.4" 
       cmd = "ganache-cli"
       args = [
         "--blockTime", "1",
@@ -62,7 +62,7 @@ EOT
       auth_soft_fail = true
     }
     docker_service "ganache-2" {
-      image = "vegaprotocol/ganache:latest"
+      image = "vegaprotocol/ganache:v1.2.4"
       cmd   = "ganache-cli"
       args  = [
         "--blockTime", "1",
