@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS perf_results (
     FILLPL boolean,
     RUNTIME integer,
     OPS integer,
+    USEBATCH boolean,
+    BATCHSIZE integer,
     EPS REAL,
     BACKLOG REAL,
     CORECPU REAL,
