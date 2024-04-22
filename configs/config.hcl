@@ -46,7 +46,7 @@ EOT
       # Do not use the `latest` tag to avoid pulling image every network restart.
       image = "vegaprotocol/ganache:v1.4.0"
       args  = [
-        "--miner.blockTime", "0.5",
+        "--miner.blockTime", "1",
         "--chain.chainId", "1440",
         "--chain.networkId", "1441",
         "-h", "0.0.0.0",
@@ -70,7 +70,7 @@ EOT
     docker_service "ganache-2" {
       image = "vegaprotocol/ganache:v1.4.0"
       args  = [
-        "--miner.blockTime", "0.5",
+        "--miner.blockTime", "1",
         "--chain.chainId", "1450",
         "--chain.networkId", "1451",
         "-h", "0.0.0.0",

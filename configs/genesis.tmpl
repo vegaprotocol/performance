@@ -199,7 +199,7 @@
     },
 	  "network_parameters": {
       "blockchains.ethereumConfig": "{\"network_id\": \"{{ .PrimaryBridge.NetworkID }}\", \"chain_id\": \"{{ .PrimaryBridge.ChainID }}\", \"collateral_bridge_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "erc20_bridge_1"}}\" }, \"confirmations\": 3, \"staking_bridge_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "staking_bridge"}}\", \"deployment_block_height\": 0}, \"token_vesting_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "erc20_vesting"}}\", \"deployment_block_height\": 0 }, \"multisig_control_contract\": { \"address\": \"{{.PrimaryBridge.GetEthContractAddr "MultisigControl"}}\", \"deployment_block_height\": 0 }}",
-      "blockchains.evmChainConfig": "{\"network_id\": \"{{ .SecondaryBridge.NetworkID }}\", \"chain_id\": \"{{ .SecondaryBridge.ChainID }}\", \"collateral_bridge_contract\": { \"address\": \"{{.SecondaryBridge.GetEthContractAddr "erc20_bridge_1"}}\" }, \"confirmations\": 3,  \"multisig_control_contract\": { \"address\": \"{{.SecondaryBridge.GetEthContractAddr "MultisigControl"}}\", \"deployment_block_height\": 0 }}",
+      "blockchains.evmBridgeConfigs": "{\"configs\": [{\"network_id\": \"{{ .SecondaryBridge.NetworkID }}\", \"chain_id\": \"{{ .SecondaryBridge.ChainID }}\", \"collateral_bridge_contract\": { \"address\": \"{{.SecondaryBridge.GetEthContractAddr "erc20_bridge_1"}}\" }, \"confirmations\": 2, \"multisig_control_contract\": { \"address\": \"{{.SecondaryBridge.GetEthContractAddr "MultisigControl"}}\", \"deployment_block_height\": 0 }, \"block_time\": \"10ms\"}]}",
       "governance.proposal.asset.maxClose": "720h",
       "blockchains.ethereumRpcAndEvmCompatDataSourcesConfig": "{\"configs\": []}",
       "governance.proposal.asset.maxEnact": "720h",
@@ -253,6 +253,7 @@
       "limits.assets.proposeEnabledFrom": "2023-05-05T00:00:00Z",
       "limits.markets.maxPeggedOrders": "1500",
       "limits.markets.proposeEnabledFrom": "2023-05-05T00:00:00Z",
+	  "limits.markets.proposeSpotEnabled": "1",
       "market.auction.maximumDuration": "168h",
       "market.auction.minimumDuration": "3s",
       "market.fee.factors.infrastructureFee": "0.0005",
