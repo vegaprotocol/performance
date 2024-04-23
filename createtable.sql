@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS perf_results (
     OPS integer,
     USEBATCH boolean,
     BATCHSIZE integer,
+    SPOTMARKET boolean,
     EPS REAL,
     BACKLOG REAL,
     CORECPU REAL,
