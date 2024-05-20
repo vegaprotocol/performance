@@ -1,16 +1,17 @@
-TESTNAME       LPUSERS  SLALEVELS  SLAUPDATE  NORMALUSERS  MARKETS  VOTERS  PEGGED  STOPLOSSORDERS USELP  PRICELEVELS  FILLPL  RUNTIME  OPS   USEBATCH  BATCHSIZE SPOTMARKET
-Spot8          3        1          10         997          1        3       25      0              false  1000         false   600      350   false     0         true
-Batches1       3        1          10         997          1        3       25      0              false  1000         false   600      100   true      10        false
-Batches2       3        1          10         997          1        3       25      0              false  1000         false   600      40    true      25        false
-Batches3       3        1          10         997          1        3       25      0              false  1000         false   600      20    true      50        false
-Batches4       3        1          10         997          1        3       25      0              false  1000         false   600      10    true      100       false
-Batches5       3        1          10         997          1        3       25      0              false  1000         false   600      5     true      199       false
-Default2       3        1          10         997          1        3       25      0              false  1000         false   600      1     false     0         false
-Default8       3        1          10         997          1        3       25      0              false  1000         false   600      350   false     0         false
-LPUsers6       50       3          10         950          1        3       0       0              false  1000         false   600      100   false     0         false
-Markets6       3        3          10         997          10       3       0       0              false  1000         false   600      100   false     0         false
-PriceLevels3   3        3          10         997          1        3       0       0              false  9999         true    600      100   false     0         false
-SLALevels5     3        50         10         997          1        3       0       0              false  1000         false   600      100   false     0         false
-SLAUpdates4    3        10         30         997          1        3       0       0              false  1000         false   600      100   false     0         false
-StopLoss4      3        3          10         997          1        3       0       4              false  1000         false   600      100   false     0         false
-StopLoss5      3        3          10         997          1        3       0       10             false  1000         false   600      100   false     0         false
+TESTNAME       LPUSERS  SLALEVELS  SLAUPDATE  NORMALUSERS  MARKETS  VOTERS  PEGGED  STOPLOSSORDERS USELP  PRICELEVELS  FILLPL  RUNTIME  OPS   USEBATCH  BATCHSIZE SPOTMARKET  AMM
+Spot8          3        1          10         997          1        3       25      0              false  1000         false   600      350   false     0         true        false
+Batches1       3        1          10         997          1        3       25      0              false  1000         false   600      100   true      10        false       false
+Batches2       3        1          10         997          1        3       25      0              false  1000         false   600      40    true      25        false       false
+Batches3       3        1          10         997          1        3       25      0              false  1000         false   600      20    true      50        false       false
+Batches4       3        1          10         997          1        3       25      0              false  1000         false   600      10    true      100       false       false
+Batches5       3        1          10         997          1        3       25      0              false  1000         false   600      5     true      199       false       false
+Default2       3        1          10         997          1        3       25      0              false  1000         false   600      1     false     0         false       false
+Default8       3        1          10         997          1        3       25      0              false  1000         false   600      350   false     0         false       false
+LPUsers6       50       3          10         950          1        3       0       0              false  1000         false   600      100   false     0         false       false
+AMMUsers       50       3          10         950          1        3       0       0              false  1000         false   600      100   false     0         false       true
+Markets6       3        3          10         997          10       3       0       0              false  1000         false   600      100   false     0         false       false
+PriceLevels3   3        3          10         997          1        3       0       0              false  9999         true    600      100   false     0         false       false
+SLALevels5     3        50         10         997          1        3       0       0              false  1000         false   600      100   false     0         false       false
+SLAUpdates4    3        10         30         997          1        3       0       0              false  1000         false   600      100   false     0         false       false
+StopLoss4      3        3          10         997          1        3       0       4              false  1000         false   600      100   false     0         false       false
+StopLoss5      3        3          10         997          1        3       0       10             false  1000         false   600      100   false     0         false       false
